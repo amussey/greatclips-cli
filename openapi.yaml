@@ -1,0 +1,871 @@
+openapi: 3.0.0
+info:
+  title: Great Clips API
+  description: API endpoints for Great Clips store information and customer check-in management via stylewaretouch.net
+  version: 1.0.0
+  contact:
+    name: Great Clips
+    url: https://www.greatclips.com
+
+servers:
+  - url: https://www.stylewaretouch.net/api
+    description: Production API server (embedded authentication)
+  - url: https://webservices.greatclips.com
+    description: Production API server (customer API)
+
+paths:
+  /store/waitTime:
+    post:
+      summary: Get wait times for stores
+      description: Fetch estimated wait times and status for one or more stores
+      operationId: getWaitTimes
+      tags:
+        - Store
+      parameters:
+        - name: t
+          in: query
+          description: Unix timestamp in milliseconds
+          required: true
+          schema:
+            type: string
+            example: "1703086800000"
+        - name: s
+          in: query
+          description: HMAC-SHA256 authentication signature (base64url encoded)
+          required: true
+          schema:
+            type: string
+            example: "UygEd-c8j0nFYm7wCsG_vpB-90VdpMP8p3znQ-WgjWQ="
+      requestBody:
+        description: Array of store numbers to query
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  storeNumber:
+                    type: string
+                    description: Store number
+                    example: "8874"
+                required:
+                  - storeNumber
+              minItems: 1
+              example:
+                - storeNumber: "8874"
+                - storeNumber: "8875"
+      responses:
+        '200':
+          description: Successful response with wait time data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WaitTimeResponse'
+        '400':
+          description: Bad request - invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - invalid signature
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /customer/checkIn:
+    post:
+      summary: Check in a customer
+      description: Submit a check-in request for a customer at a specific store
+      operationId: customerCheckIn
+      tags:
+        - Customer
+      parameters:
+        - name: t
+          in: query
+          description: Unix timestamp in milliseconds
+          required: true
+          schema:
+            type: string
+            example: "1703086800000"
+        - name: s
+          in: query
+          description: HMAC-SHA256 authentication signature (base64url encoded)
+          required: true
+          schema:
+            type: string
+            example: "UygEd-c8j0nFYm7wCsG_vpB-90VdpMP8p3znQ-WgjWQ="
+      requestBody:
+        description: Customer check-in information
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckInRequest'
+      responses:
+        '200':
+          description: Check-in successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckInResponse'
+        '400':
+          description: Bad request - invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - invalid signature
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /customer/cancel:
+    post:
+      summary: Cancel a check-in
+      description: Cancel an existing customer check-in using the OCI ID
+      operationId: cancelCheckIn
+      tags:
+        - Customer
+      parameters:
+        - name: t
+          in: query
+          description: Unix timestamp in milliseconds
+          required: true
+          schema:
+            type: string
+            example: "1703086800000"
+        - name: s
+          in: query
+          description: HMAC-SHA256 authentication signature (base64url encoded)
+          required: true
+          schema:
+            type: string
+            example: "UygEd-c8j0nFYm7wCsG_vpB-90VdpMP8p3znQ-WgjWQ="
+      requestBody:
+        description: Cancellation request with check-in details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CancelCheckInRequest'
+      responses:
+        '200':
+          description: Cancellation successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CancelCheckInResponse'
+        '400':
+          description: Bad request - invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - invalid signature
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Check-in not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /customer/status:
+    post:
+      summary: Get customer check-in status
+      description: Retrieve the current status of a customer's check-in and position in queue
+      operationId: getCheckInStatus
+      tags:
+        - Customer
+      parameters:
+        - name: t
+          in: query
+          description: Unix timestamp in milliseconds
+          required: true
+          schema:
+            type: string
+            example: "1703086800000"
+        - name: s
+          in: query
+          description: HMAC-SHA256 authentication signature (base64url encoded)
+          required: true
+          schema:
+            type: string
+            example: "UygEd-c8j0nFYm7wCsG_vpB-90VdpMP8p3znQ-WgjWQ="
+      requestBody:
+        description: Status request with check-in details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StatusRequest'
+      responses:
+        '200':
+          description: Status retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+        '400':
+          description: Bad request - invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - invalid signature
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Check-in not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /customer/authentication/token:
+    get:
+      summary: Generate authentication token
+      description: Generate a new authentication token for accessing customer API endpoints. No authentication required.
+      operationId: generateAuthToken
+      tags:
+        - Authentication
+      servers:
+        - url: https://webservices.greatclips.com
+          description: Customer API server
+      responses:
+        '200':
+          description: Token generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthTokenResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /customer/salon-search/term:
+    post:
+      summary: Search for salons by term
+      description: Search for Great Clips salons by zip code, city name, address, or other search terms
+      operationId: searchSalonsByTerm
+      tags:
+        - Salon Search
+      servers:
+        - url: https://webservices.greatclips.com
+          description: Customer API server
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: Salon search parameters
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SalonSearchRequest'
+      responses:
+        '200':
+          description: Search results returned successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SalonSearchResponse'
+        '400':
+          description: Bad request - invalid search parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /customer/salon-search/point:
+    post:
+      summary: Search for salons by coordinates
+      description: Search for Great Clips salons using latitude and longitude coordinates
+      operationId: searchSalonsByPoint
+      tags:
+        - Salon Search
+      servers:
+        - url: https://webservices.greatclips.com
+          description: Customer API server
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: Geographic search parameters
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GeoPointSearchRequest'
+      responses:
+        '200':
+          description: Search results returned successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SalonSearchResponse'
+        '400':
+          description: Bad request - invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /customer/salon-search/rect:
+    post:
+      summary: Search for salons by bounding rectangle
+      description: Search for Great Clips salons within a geographic bounding rectangle (northeast and southwest corners)
+      operationId: searchSalonsByRectangle
+      tags:
+        - Salon Search
+      servers:
+        - url: https://webservices.greatclips.com
+          description: Customer API server
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: Bounding rectangle search parameters
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RectangleSearchRequest'
+      responses:
+        '200':
+          description: Search results returned successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SalonSearchResponse'
+        '400':
+          description: Bad request - invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    WaitTimeResponse:
+      type: object
+      description: Wait time information for a store
+      properties:
+        storeNumber:
+          type: string
+          description: The store number
+          example: "8874"
+        estimatedWaitMinutes:
+          type: integer
+          description: Estimated wait time in minutes (-1 if unavailable)
+          example: 25
+        ociSalonStateCode:
+          type: integer
+          description: Numeric status code for the salon state
+          enum: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+          example: 0
+        ociSalonStateDescription:
+          type: string
+          description: Human-readable description of salon state
+          enum:
+            - ActiveOci
+            - ListFull
+            - ExceedsClosed
+            - NotYetOpenToday
+            - OpeningCountdown
+            - ClosingCountdown
+            - ClosedToday
+            - NotResponding
+            - ComingSoon
+          example: "ActiveOci"
+      required:
+        - storeNumber
+        - estimatedWaitMinutes
+        - ociSalonStateCode
+        - ociSalonStateDescription
+
+    CheckInRequest:
+      type: object
+      description: Customer check-in request
+      properties:
+        storeNumber:
+          type: integer
+          description: Store number
+          example: 8874
+        name:
+          type: string
+          description: Customer name
+          example: "John Doe"
+        phone:
+          type: string
+          description: Customer phone number
+          example: "555-1234"
+        guests:
+          type: integer
+          description: Number of guests
+          example: 1
+        ipAddress:
+          type: string
+          description: Customer IP address
+          example: "192.168.1.100"
+        profileId:
+          type: string
+          description: Customer profile ID
+          example: "profile-123"
+        source:
+          type: string
+          description: Request source
+          enum: ["Browser"]
+          example: "Browser"
+      required:
+        - storeNumber
+        - name
+        - phone
+
+    CheckInResponse:
+      type: object
+      description: Successful check-in response
+      properties:
+        ociId:
+          type: string
+          description: OCI ID for the check-in (needed for cancel/status operations)
+          example: "abc123xyz"
+        estimatedWaitMinutes:
+          type: integer
+          description: Estimated wait time in minutes
+          example: 25
+        checkInStatus:
+          type: string
+          description: Status of the check-in
+          example: "CheckedIn"
+        storeNumber:
+          type: integer
+          description: Store number
+          example: 8874
+
+    CancelCheckInRequest:
+      type: object
+      description: Request to cancel a check-in
+      properties:
+        ociId:
+          type: string
+          description: OCI ID from the check-in
+          example: "abc123xyz"
+        storeNumber:
+          type: integer
+          description: Store number
+          example: 8874
+        phone:
+          type: string
+          description: Customer phone number
+          example: "555-1234"
+        guests:
+          type: integer
+          description: Number of guests
+          example: 1
+        ipAddress:
+          type: string
+          description: Customer IP address
+        name:
+          type: string
+          description: Customer name
+        source:
+          type: string
+          description: Request source
+          enum: ["Browser"]
+          example: "Browser"
+      required:
+        - ociId
+        - storeNumber
+        - phone
+
+    CancelCheckInResponse:
+      type: object
+      description: Successful cancellation response
+      properties:
+        ociId:
+          type: string
+          description: OCI ID of the cancelled check-in
+          example: "abc123xyz"
+        status:
+          type: string
+          description: Cancellation status
+          example: "Cancelled"
+
+    StatusRequest:
+      type: object
+      description: Request to get check-in status
+      properties:
+        ociId:
+          type: string
+          description: OCI ID from the check-in
+          example: "abc123xyz"
+        storeNumber:
+          type: integer
+          description: Store number
+          example: 8874
+        phone:
+          type: string
+          description: Customer phone number
+          example: "555-1234"
+        guests:
+          type: integer
+          description: Number of guests
+          example: 1
+        ipAddress:
+          type: string
+          description: Customer IP address
+        profileId:
+          type: string
+          description: Customer profile ID
+        name:
+          type: string
+          description: Customer name
+        source:
+          type: string
+          description: Request source
+          enum: ["Browser"]
+          example: "Browser"
+      required:
+        - ociId
+        - storeNumber
+        - phone
+
+    StatusResponse:
+      type: object
+      description: Check-in status response
+      properties:
+        ociId:
+          type: string
+          description: OCI ID of the check-in
+          example: "abc123xyz"
+        checkInStatus:
+          type: string
+          description: Current status of the check-in
+          example: "CheckedIn"
+        positionInQueue:
+          type: integer
+          description: Current position in the queue
+          example: 3
+        estimatedWaitMinutes:
+          type: integer
+          description: Current estimated wait time in minutes
+          example: 20
+        storeNumber:
+          type: integer
+          description: Store number
+          example: 8874
+
+    Error:
+      type: object
+      description: Error response
+      properties:
+        code:
+          type: integer
+          description: HTTP status code
+          example: 400
+        message:
+          type: string
+          description: Error message
+          example: "Invalid parameters"
+      required:
+        - code
+        - message
+
+    AuthTokenResponse:
+      type: object
+      description: Authentication token response
+      properties:
+        accessToken:
+          type: string
+          description: JWT access token for authenticated API requests
+          example: "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTUxMiIsInR5cCI6IkpXVCJ9..."
+      required:
+        - accessToken
+
+    SalonSearchRequest:
+      type: object
+      description: Search parameters for salon search by term
+      properties:
+        term:
+          type: string
+          description: Search term (zip code, city name, address, etc.)
+          example: "90210"
+        radius:
+          type: integer
+          description: Search radius in miles
+          default: 50
+          example: 50
+        limit:
+          type: string
+          description: Maximum number of results to return
+          default: "50"
+          example: "50"
+        lat:
+          type: number
+          format: float
+          description: Latitude for geographic context (optional)
+          default: 0
+          example: 0
+        lng:
+          type: number
+          format: float
+          description: Longitude for geographic context (optional)
+          default: 0
+          example: 0
+      required:
+        - term
+
+    GeoPointSearchRequest:
+      type: object
+      description: Search parameters for salon search by geographic point
+      properties:
+        lat:
+          type: number
+          format: float
+          description: Latitude coordinate
+          example: 34.0522
+        lng:
+          type: number
+          format: float
+          description: Longitude coordinate
+          example: -118.2437
+        radius:
+          type: integer
+          description: Search radius in miles
+          default: 50
+          example: 50
+        limit:
+          type: string
+          description: Maximum number of results to return
+          default: "50"
+          example: "50"
+      required:
+        - lat
+        - lng
+
+    RectangleSearchRequest:
+      type: object
+      description: Search parameters for salon search by bounding rectangle
+      properties:
+        northeastLat:
+          type: number
+          format: float
+          description: Latitude of northeast corner
+          example: 34.1522
+        northeastLng:
+          type: number
+          format: float
+          description: Longitude of northeast corner
+          example: -118.1437
+        southwestLat:
+          type: number
+          format: float
+          description: Latitude of southwest corner
+          example: 33.9522
+        southwestLng:
+          type: number
+          format: float
+          description: Longitude of southwest corner
+          example: -118.3437
+        limit:
+          type: string
+          description: Maximum number of results to return
+          default: "50"
+          example: "50"
+      required:
+        - northeastLat
+        - northeastLng
+        - southwestLat
+        - southwestLng
+
+    Salon:
+      type: object
+      description: Great Clips salon information
+      properties:
+        salonNumber:
+          type: string
+          description: Unique salon identifier
+          example: "8171"
+        salonName:
+          type: string
+          description: Salon name
+          example: "Midtown Crossing"
+        primaryAddress:
+          $ref: '#/components/schemas/Address'
+        phoneNumber:
+          type: string
+          description: Contact phone number
+          example: "(323) 692-1479"
+        distance:
+          type: number
+          format: float
+          description: Distance from search location in miles
+          example: 5.7
+        latitude:
+          type: number
+          format: float
+          description: Latitude coordinate
+          example: 34.048456
+        longitude:
+          type: number
+          format: float
+          description: Longitude coordinate
+          example: -118.336402
+        todayOpenTime:
+          type: string
+          description: Opening time for today
+          example: "09:00 AM"
+        todayCloseTime:
+          type: string
+          description: Closing time for today
+          example: "06:00 PM"
+        status:
+          type: integer
+          description: Salon status code
+          example: 1
+
+    Address:
+      type: object
+      description: Address information
+      properties:
+        line1:
+          type: string
+          description: Address line 1
+          example: "4550 W Pico Blvd"
+        line2:
+          type: string
+          description: Address line 2
+          example: "Unit C1-305"
+        city:
+          type: string
+          description: City name
+          example: "Los Angeles"
+        stateOrProvince:
+          type: string
+          description: State or province code
+          example: "CA"
+        postalCode:
+          type: string
+          description: Postal/zip code
+          example: "90019"
+        country:
+          type: string
+          description: Country name
+          example: "USA"
+
+    SalonSearchResponse:
+      type: object
+      description: Response containing search results
+      properties:
+        salonData:
+          type: array
+          description: Array of salon results
+          items:
+            $ref: '#/components/schemas/Salon'
+
+  securitySchemes:
+    TimestampSignature:
+      type: apiKey
+      name: t
+      in: query
+      description: Unix timestamp in milliseconds (required for all requests)
+    HMACSignature:
+      type: apiKey
+      name: s
+      in: query
+      description: HMAC-SHA256 signature generated from timestamp + request body (base64url encoded)
+    BearerAuth:
+      type: http
+      scheme: bearer
+      description: Bearer token obtained from /customer/authentication/token endpoint
+
+security:
+  - TimestampSignature: []
+    HMACSignature: []
+
+tags:
+  - name: Store
+    description: Store-related operations
+  - name: Customer
+    description: Customer check-in operations
+  - name: Authentication
+    description: Authentication token generation
+  - name: Salon Search
+    description: Salon search and discovery operations
+
