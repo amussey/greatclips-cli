@@ -45,9 +45,17 @@ class Config:
         load_dotenv(dotenv_path=env_file)
 
         # Load values from environment
+        secret_key = os.getenv("SECRET_KEY_CSV")
+        encryption_key = os.getenv("ENCRYPTION_KEY")
+
+        if not secret_key:
+            raise ValueError("SECRET_KEY_CSV environment variable is required")
+        if not encryption_key:
+            raise ValueError("ENCRYPTION_KEY environment variable is required")
+
         return cls(
-            secret_key_csv=os.getenv("SECRET_KEY_CSV"),
-            encryption_key=os.getenv("ENCRYPTION_KEY"),
+            secret_key_csv=secret_key,
+            encryption_key=encryption_key,
             debug=os.getenv("DEBUG", "").lower() in ("true", "1", "yes"),
             timeout=int(os.getenv("TIMEOUT", "30")),
         )

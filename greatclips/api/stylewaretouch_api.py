@@ -17,13 +17,13 @@ class APIError(Exception):
     pass
 
 
-def _make_request(endpoint: str, payload: dict[str, Any]) -> dict[str, Any]:
+def _make_request(endpoint: str, payload: dict[str, Any] | list[Any]) -> dict[str, Any]:
     """
     Make an authenticated request to stylewaretouch.net API.
 
     Args:
         endpoint: The API endpoint (e.g., "store/waitTime")
-        payload: The request payload as a dictionary
+        payload: The request payload as a dictionary or list
 
     Returns:
         JSON response as a dictionary
