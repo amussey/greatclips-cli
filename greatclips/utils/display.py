@@ -25,7 +25,7 @@ def display_store_info(store):
     if wait_time >= 0:
         click.echo(f"  Wait Time: {wait_time} minutes")
     else:
-        click.echo(f"  Wait Time: Unavailable")
+        click.echo("  Wait Time: Unavailable")
 
 
 def display_search_results(data):

@@ -4,7 +4,7 @@ import json
 import time
 import urllib.error
 import urllib.request
-from typing import Any, Dict, List
+from typing import Any
 
 from greatclips.api.auth.auth import get_encrypted_token
 

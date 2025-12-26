@@ -3,7 +3,7 @@
 import json
 import urllib.error
 import urllib.request
-from typing import Any, Dict
+from typing import Any
 
 BASE_URL = "https://webservices.greatclips.com"
 
