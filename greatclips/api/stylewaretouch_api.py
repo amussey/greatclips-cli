@@ -11,7 +11,7 @@ from greatclips.api.auth.auth import get_encrypted_token
 BASE_URL = "https://www.stylewaretouch.net/api"
 
 
-class APIError(Exception):
+class StylewareTouchAPIError(Exception):
     """Custom exception for API errors."""
 
     pass
@@ -29,7 +29,7 @@ def _make_request(endpoint: str, payload: dict[str, Any] | list[Any]) -> dict[st
         JSON response as a dictionary
 
     Raises:
-        APIError: If the request fails
+        StylewareTouchAPIError: If the request fails
     """
     # Prepare payload
     payload_json = json.dumps(payload)
@@ -56,9 +56,9 @@ def _make_request(endpoint: str, payload: dict[str, Any] | list[Any]) -> dict[st
             return result
     except urllib.error.HTTPError as e:
         error_body = e.read().decode("utf-8")
-        raise APIError(f"HTTP {e.code}: {error_body}")
+        raise StylewareTouchAPIError(f"HTTP {e.code}: {error_body}")
     except Exception as e:
-        raise APIError(f"Request failed: {str(e)}")
+        raise StylewareTouchAPIError(f"Request failed: {str(e)}")
 
 
 def get_wait_times(store_numbers: list[int]) -> dict[str, Any]:
@@ -72,7 +72,7 @@ def get_wait_times(store_numbers: list[int]) -> dict[str, Any]:
         Dictionary containing wait time data for each store
 
     Raises:
-        APIError: If the API request fails
+        StylewareTouchAPIError: If the API request fails
     """
     payload = [{"storeNumber": str(num)} for num in store_numbers]
     return _make_request("store/waitTime", payload)
@@ -102,7 +102,7 @@ def check_in_customer(
         Check-in confirmation data
 
     Raises:
-        APIError: If the API request fails
+        StylewareTouchAPIError: If the API request fails
     """
     payload = {
         "storeNumber": store_number,
@@ -140,7 +140,7 @@ def cancel_check_in(
         Cancellation confirmation data
 
     Raises:
-        APIError: If the API request fails
+        StylewareTouchAPIError: If the API request fails
     """
     payload = {
         "computerId": "",
@@ -181,7 +181,7 @@ def get_customer_status(
         Current check-in status and position in queue
 
     Raises:
-        APIError: If the API request fails
+        StylewareTouchAPIError: If the API request fails
     """
     payload = {
         "computerId": "",

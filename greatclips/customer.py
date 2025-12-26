@@ -43,7 +43,7 @@ def customer_check_in(store, name, phone, guests, ip, profile_id, output_json):
             click.secho("✓ Check-in successful!", fg="green")
             click.echo(json.dumps(result, indent=2))
 
-    except stylewaretouch_api.APIError as e:
+    except stylewaretouch_api.StylewareTouchAPIError as e:
         click.secho(f"✗ Check-in failed: {str(e)}", fg="red", err=True)
         raise click.Exit(1)
 
@@ -78,7 +78,7 @@ def customer_cancel(oci_id, store, phone, guests, ip, name, output_json):
             click.secho("✓ Cancellation successful!", fg="green")
             click.echo(json.dumps(result, indent=2))
 
-    except stylewaretouch_api.APIError as e:
+    except stylewaretouch_api.StylewareTouchAPIError as e:
         click.secho(f"✗ Cancellation failed: {str(e)}", fg="red", err=True)
         raise click.Exit(1)
 
@@ -115,6 +115,6 @@ def customer_status(oci_id, store, phone, guests, ip, profile_id, name, output_j
             click.secho("✓ Status retrieved!", fg="green")
             click.echo(json.dumps(result, indent=2))
 
-    except stylewaretouch_api.APIError as e:
+    except stylewaretouch_api.StylewareTouchAPIError as e:
         click.secho(f"✗ Status request failed: {str(e)}", fg="red", err=True)
         raise click.Exit(1)

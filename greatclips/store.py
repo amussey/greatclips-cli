@@ -31,9 +31,9 @@ def store_wait_times(store_numbers, output_json):
         if output_json:
             click.echo(json.dumps(result, indent=2))
         else:
-            display_wait_times(result)
+            display_wait_times(result["stores"])
 
-    except stylewaretouch_api.APIError as e:
+    except stylewaretouch_api.StylewareTouchAPIError as e:
         click.secho(f"Error: {str(e)}", fg="red", err=True)
         raise click.Exit(1)
 
