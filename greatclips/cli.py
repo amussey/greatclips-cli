@@ -2,8 +2,8 @@
 
 import click
 
-from .store import store
 from .customer import customer
+from .store import store
 
 
 @click.group()
@@ -17,5 +17,5 @@ cli.add_command(store)
 cli.add_command(customer)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     cli()

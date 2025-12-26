@@ -2,22 +2,22 @@
 
 import json
 import time
-import urllib.request
 import urllib.error
-from typing import List, Dict, Any
+import urllib.request
+from typing import Any, Dict, List
 
 from greatclips.api.auth.auth import get_encrypted_token
-
 
 BASE_URL = "https://www.stylewaretouch.net/api"
 
 
 class APIError(Exception):
     """Custom exception for API errors."""
+
     pass
 
 
-def _make_request(endpoint: str, payload: Dict[str, Any]) -> Dict[str, Any]:
+def _make_request(endpoint: str, payload: dict[str, Any]) -> dict[str, Any]:
     """
     Make an authenticated request to stylewaretouch.net API.
 
@@ -36,7 +36,7 @@ def _make_request(endpoint: str, payload: Dict[str, Any]) -> Dict[str, Any]:
     timestamp_ms = str(int(time.time() * 1000))
 
     # Generate authentication token
-    auth_token = get_encrypted_token(f'{timestamp_ms}{payload_json}')
+    auth_token = get_encrypted_token(f"{timestamp_ms}{payload_json}")
 
     # Build URL
     url = f"{BASE_URL}/{endpoint}?t={timestamp_ms}&s={auth_token}"
@@ -44,26 +44,24 @@ def _make_request(endpoint: str, payload: Dict[str, Any]) -> Dict[str, Any]:
     # Create request
     request = urllib.request.Request(
         url,
-        data=payload_json.encode('utf-8'),
-        method='POST',
-        headers={
-            'Content-Type': 'application/json'
-        }
+        data=payload_json.encode("utf-8"),
+        method="POST",
+        headers={"Content-Type": "application/json"},
     )
 
     # Make request
     try:
         with urllib.request.urlopen(request) as response:
-            result = json.loads(response.read().decode('utf-8'))
+            result = json.loads(response.read().decode("utf-8"))
             return result
     except urllib.error.HTTPError as e:
-        error_body = e.read().decode('utf-8')
+        error_body = e.read().decode("utf-8")
         raise APIError(f"HTTP {e.code}: {error_body}")
     except Exception as e:
         raise APIError(f"Request failed: {str(e)}")
 
 
-def get_wait_times(store_numbers: List[int]) -> Dict[str, Any]:
+def get_wait_times(store_numbers: list[int]) -> dict[str, Any]:
     """
     Fetch wait times for one or more store numbers.
 
@@ -87,8 +85,8 @@ def check_in_customer(
     guests: int = 1,
     ip_address: str = "",
     profile_id: str = "",
-    **kwargs
-) -> Dict[str, Any]:
+    **kwargs,
+) -> dict[str, Any]:
     """
     Check a customer in to a salon.
 
@@ -113,7 +111,7 @@ def check_in_customer(
         "guests": guests,
         "ipAddress": ip_address,
         "profileId": profile_id,
-        "source": "Browser"
+        "source": "Browser",
     }
     return _make_request("customer/checkIn", payload)
 
@@ -125,8 +123,8 @@ def cancel_check_in(
     guests: int = 1,
     ip_address: str = "",
     name: str = "",
-    **kwargs
-) -> Dict[str, Any]:
+    **kwargs,
+) -> dict[str, Any]:
     """
     Cancel an existing check-in.
 
@@ -152,7 +150,7 @@ def cancel_check_in(
         "ipAddress": ip_address,
         "name": name,
         "storeNumber": store_number,
-        "source": "Browser"
+        "source": "Browser",
     }
     return _make_request("customer/cancel", payload)
 
@@ -165,8 +163,8 @@ def get_customer_status(
     ip_address: str = "",
     profile_id: str = "",
     name: str = "",
-    **kwargs
-) -> Dict[str, Any]:
+    **kwargs,
+) -> dict[str, Any]:
     """
     Get the current status of a customer's check-in.
 
@@ -194,6 +192,6 @@ def get_customer_status(
         "ipAddress": ip_address,
         "profileId": profile_id,
         "name": name,
-        "storeNumber": store_number
+        "storeNumber": store_number,
     }
     return _make_request("customer/status", payload)

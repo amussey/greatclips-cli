@@ -1,6 +1,6 @@
 """Setup configuration for Great Clips CLI."""
 
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 setup(
     name="greatclips-cli",
@@ -17,5 +17,5 @@ setup(
             "greatclips-cli=greatclips.cli:cli",
         ],
     },
-    python_requires=">=3.8",
+    python_requires=">=3.10",
 )

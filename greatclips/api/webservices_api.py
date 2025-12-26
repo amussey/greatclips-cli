@@ -1,16 +1,16 @@
 """API client for webservices.greatclips.com endpoints."""
 
 import json
-import urllib.request
 import urllib.error
-from typing import Dict, Any
-
+import urllib.request
+from typing import Any, Dict
 
 BASE_URL = "https://webservices.greatclips.com"
 
 
 class WebservicesAPIError(Exception):
     """Custom exception for webservices API errors."""
+
     pass
 
 
@@ -20,8 +20,8 @@ def search_stores_by_term(
     limit: int = 50,
     lat: float = 0,
     lng: float = 0,
-    access_token: str = ""
-) -> Dict[str, Any]:
+    access_token: str = "",
+) -> dict[str, Any]:
     """
     Search for stores by term (zip code, city name, etc).
 
@@ -47,30 +47,26 @@ def search_stores_by_term(
 
     url = f"{BASE_URL}/customer/salon-search/term"
 
-    payload_json = json.dumps({
-        "term": term,
-        "radius": radius,
-        "limit": str(limit),
-        "lat": lat,
-        "lng": lng
-    })
+    payload_json = json.dumps(
+        {"term": term, "radius": radius, "limit": str(limit), "lat": lat, "lng": lng}
+    )
 
     request = urllib.request.Request(
         url,
-        data=payload_json.encode('utf-8'),
-        method='POST',
+        data=payload_json.encode("utf-8"),
+        method="POST",
         headers={
-            'Content-Type': 'application/json',
-            'Authorization': f'Bearer {access_token}'
-        }
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {access_token}",
+        },
     )
 
     try:
         with urllib.request.urlopen(request) as response:
-            result = json.loads(response.read().decode('utf-8'))
+            result = json.loads(response.read().decode("utf-8"))
             return result
     except urllib.error.HTTPError as e:
-        error_body = e.read().decode('utf-8')
+        error_body = e.read().decode("utf-8")
         raise WebservicesAPIError(f"HTTP {e.code}: {error_body}")
     except Exception as e:
         raise WebservicesAPIError(f"Search request failed: {str(e)}")
@@ -81,8 +77,8 @@ def search_stores_by_point(
     longitude: float,
     radius: int = 50,
     limit: int = 50,
-    access_token: str = ""
-) -> Dict[str, Any]:
+    access_token: str = "",
+) -> dict[str, Any]:
     """
     Search for stores near a specific coordinate (point).
 
@@ -107,29 +103,26 @@ def search_stores_by_point(
 
     url = f"{BASE_URL}/customer/salon-search/point"
 
-    payload_json = json.dumps({
-        "lat": latitude,
-        "lng": longitude,
-        "radius": radius,
-        "limit": str(limit)
-    })
+    payload_json = json.dumps(
+        {"lat": latitude, "lng": longitude, "radius": radius, "limit": str(limit)}
+    )
 
     request = urllib.request.Request(
         url,
-        data=payload_json.encode('utf-8'),
-        method='POST',
+        data=payload_json.encode("utf-8"),
+        method="POST",
         headers={
-            'Content-Type': 'application/json',
-            'Authorization': f'Bearer {access_token}'
-        }
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {access_token}",
+        },
     )
 
     try:
         with urllib.request.urlopen(request) as response:
-            result = json.loads(response.read().decode('utf-8'))
+            result = json.loads(response.read().decode("utf-8"))
             return result
     except urllib.error.HTTPError as e:
-        error_body = e.read().decode('utf-8')
+        error_body = e.read().decode("utf-8")
         raise WebservicesAPIError(f"HTTP {e.code}: {error_body}")
     except Exception as e:
         raise WebservicesAPIError(f"Search request failed: {str(e)}")
@@ -142,8 +135,8 @@ def search_stores_by_rect(
     lng2: float,
     radius: int = 50,
     limit: int = 50,
-    access_token: str = ""
-) -> Dict[str, Any]:
+    access_token: str = "",
+) -> dict[str, Any]:
     """
     Search for stores within a rectangular area (map bounds).
 
@@ -170,31 +163,33 @@ def search_stores_by_rect(
 
     url = f"{BASE_URL}/customer/salon-search/rect"
 
-    payload_json = json.dumps({
-        "lat1": lat1,
-        "lng1": lng1,
-        "lat2": lat2,
-        "lng2": lng2,
-        "radius": radius,
-        "limit": str(limit)
-    })
+    payload_json = json.dumps(
+        {
+            "lat1": lat1,
+            "lng1": lng1,
+            "lat2": lat2,
+            "lng2": lng2,
+            "radius": radius,
+            "limit": str(limit),
+        }
+    )
 
     request = urllib.request.Request(
         url,
-        data=payload_json.encode('utf-8'),
-        method='POST',
+        data=payload_json.encode("utf-8"),
+        method="POST",
         headers={
-            'Content-Type': 'application/json',
-            'Authorization': f'Bearer {access_token}'
-        }
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {access_token}",
+        },
     )
 
     try:
         with urllib.request.urlopen(request) as response:
-            result = json.loads(response.read().decode('utf-8'))
+            result = json.loads(response.read().decode("utf-8"))
             return result
     except urllib.error.HTTPError as e:
-        error_body = e.read().decode('utf-8')
+        error_body = e.read().decode("utf-8")
         raise WebservicesAPIError(f"HTTP {e.code}: {error_body}")
     except Exception as e:
         raise WebservicesAPIError(f"Search request failed: {str(e)}")

@@ -32,7 +32,7 @@ class Config:
     timeout: int = field(default=30)
 
     @classmethod
-    def from_env(cls, env_file: Optional[str] = None) -> 'Config':
+    def from_env(cls, env_file: str | None = None) -> "Config":
         """Load configuration from environment variables and optional .env file.
 
         Args:
@@ -54,7 +54,7 @@ class Config:
         )
 
 
-def get_config(env_file: Optional[str] = None) -> Config:
+def get_config(env_file: str | None = None) -> Config:
     """Get the global configuration instance.
 
     Args:

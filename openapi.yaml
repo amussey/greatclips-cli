@@ -378,7 +378,8 @@ paths:
   /customer/salon-search/rect:
     post:
       summary: Search for salons by bounding rectangle
-      description: Search for Great Clips salons within a geographic bounding rectangle (northeast and southwest corners)
+      description:
+        Search for Great Clips salons within a geographic bounding rectangle (northeast and southwest corners)
       operationId: searchSalonsByRectangle
       tags:
         - Salon Search

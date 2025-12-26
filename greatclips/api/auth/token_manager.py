@@ -1,9 +1,8 @@
 """Token management for webservices.greatclips.com API."""
 
 import json
-import urllib.request
 import urllib.error
-
+import urllib.request
 
 BASE_URL = "https://webservices.greatclips.com"
 TOKEN_ENDPOINT = f"{BASE_URL}/customer/authentication/token"
@@ -11,6 +10,7 @@ TOKEN_ENDPOINT = f"{BASE_URL}/customer/authentication/token"
 
 class TokenManagerError(Exception):
     """Custom exception for token generation errors."""
+
     pass
 
 
@@ -47,33 +47,35 @@ class TokenManager:
             # Create HTTP request
             request = urllib.request.Request(
                 self.endpoint,
-                method='GET',
+                method="GET",
                 headers={
-                    'Content-Type': 'application/json',
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-                }
+                    "Content-Type": "application/json",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+                },
             )
 
             # Execute request
             with urllib.request.urlopen(request) as response:
                 # Check response status
                 if response.status != 200:
-                    raise TokenManagerError(f"Invalid response status: {response.status}")
+                    raise TokenManagerError(
+                        f"Invalid response status: {response.status}"
+                    )
 
                 # Parse JSON response
-                auth_token_json = json.loads(response.read().decode('utf-8'))
+                auth_token_json = json.loads(response.read().decode("utf-8"))
 
                 # Validate response contains accessToken
-                if not auth_token_json or 'accessToken' not in auth_token_json:
+                if not auth_token_json or "accessToken" not in auth_token_json:
                     raise TokenManagerError("Access token not received from API")
 
-                return auth_token_json['accessToken']
+                return auth_token_json["accessToken"]
 
         except urllib.error.HTTPError as e:
-            error_body = e.read().decode('utf-8')
+            error_body = e.read().decode("utf-8")
             try:
                 error_json = json.loads(error_body)
-                error_msg = error_json.get('message', error_json.get('error', str(e)))
+                error_msg = error_json.get("message", error_json.get("error", str(e)))
                 raise TokenManagerError(f"API Error (HTTP {e.code}): {error_msg}")
             except json.JSONDecodeError:
                 raise TokenManagerError(f"API Error (HTTP {e.code}): {error_body}")
