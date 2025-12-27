@@ -133,7 +133,6 @@ def search_stores_by_rect(
     lng1: float,
     lat2: float,
     lng2: float,
-    radius: int = 50,
     limit: int = 50,
     access_token: str = "",
 ) -> dict[str, Any]:
@@ -148,7 +147,6 @@ def search_stores_by_rect(
         lng1: Longitude of first corner
         lat2: Latitude of second corner
         lng2: Longitude of second corner
-        radius: Search radius in miles (default: 50)
         limit: Maximum number of results (default: 50)
         access_token: Great Clips API access token (required)
 
@@ -169,7 +167,7 @@ def search_stores_by_rect(
             "lng1": lng1,
             "lat2": lat2,
             "lng2": lng2,
-            "radius": radius,
+            "radius": 50,  # Default radius, doesn't appear to be used in rect search
             "limit": str(limit),
         }
     )

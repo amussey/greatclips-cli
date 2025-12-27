@@ -136,12 +136,9 @@ def store_search_point(lat, lng, token, radius, limit, output_json):
     default=None,
     help="Great Clips API access token (auto-generated if not provided)",
 )
-@click.option(
-    "--radius", type=int, default=50, help="Search radius in miles (default: 50)"
-)
 @click.option("--limit", type=int, default=50, help="Max results (default: 50)")
 @click.option("--json", "output_json", is_flag=True, help="Output as JSON")
-def store_search_rect(lat1, lng1, lat2, lng2, token, radius, limit, output_json):
+def store_search_rect(lat1, lng1, lat2, lng2, token, limit, output_json):
     """
     Search for stores within a rectangular area (map bounds).
 
@@ -159,7 +156,6 @@ def store_search_rect(lat1, lng1, lat2, lng2, token, radius, limit, output_json)
             lng1=lng1,
             lat2=lat2,
             lng2=lng2,
-            radius=radius,
             limit=limit,
             access_token=token,
         )
