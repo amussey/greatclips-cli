@@ -2,7 +2,6 @@
 
 import os
 from dataclasses import dataclass, field
-from typing import Optional
 
 from dotenv import load_dotenv
 
@@ -32,7 +31,7 @@ class Config:
     timeout: int = field(default=30)
 
     @classmethod
-    def from_env(cls, env_file: Optional[str] = None) -> 'Config':
+    def from_env(cls, env_file: str | None = None) -> "Config":
         """Load configuration from environment variables and optional .env file.
 
         Args:
@@ -46,15 +45,23 @@ class Config:
         load_dotenv(dotenv_path=env_file)
 
         # Load values from environment
+        secret_key = os.getenv("SECRET_KEY_CSV")
+        encryption_key = os.getenv("ENCRYPTION_KEY")
+
+        if not secret_key:
+            raise ValueError("SECRET_KEY_CSV environment variable is required")
+        if not encryption_key:
+            raise ValueError("ENCRYPTION_KEY environment variable is required")
+
         return cls(
-            secret_key_csv=os.getenv("SECRET_KEY_CSV"),
-            encryption_key=os.getenv("ENCRYPTION_KEY"),
+            secret_key_csv=secret_key,
+            encryption_key=encryption_key,
             debug=os.getenv("DEBUG", "").lower() in ("true", "1", "yes"),
             timeout=int(os.getenv("TIMEOUT", "30")),
         )
 
 
-def get_config(env_file: Optional[str] = None) -> Config:
+def get_config(env_file: str | None = None) -> Config:
     """Get the global configuration instance.
 
     Args:

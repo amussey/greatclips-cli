@@ -1,5 +1,7 @@
 # Project specific
 .env
+.python-version
+old/
 
 
 ## Python (from https://github.com/github/gitignore/blob/main/Python.gitignore)

@@ -1,11 +1,10 @@
 """Authentication utilities for Great Clips API."""
 
+import base64
 import hashlib
 import hmac
-import base64
-from typing import Optional
 
-from .config import get_config
+from greatclips.config import Config, get_config
 
 
 def _hmac_sha256(key: bytes, message: bytes) -> bytes:
@@ -37,7 +36,7 @@ def _encrypt_with_xo(array_xor_with_h: bytes, encrypt_seven_c: str) -> bytes:
     return bytes(a ^ b for a, b in zip(array_xor_with_h[:32], bitwise_xor_map[:32]))
 
 
-def get_encrypted_token(payload: str, config: Optional['Config'] = None) -> str:
+def get_encrypted_token(payload: str, config: Config | None = None) -> str:
     """
     Generate authentication token for stylewaretouch.net API.
 

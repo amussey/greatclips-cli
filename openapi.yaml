@@ -62,9 +62,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/WaitTimeResponse'
+                $ref: '#/components/schemas/WaitTimeListResponse'
         '400':
           description: Bad request - invalid parameters
           content:
@@ -378,7 +376,8 @@ paths:
   /customer/salon-search/rect:
     post:
       summary: Search for salons by bounding rectangle
-      description: Search for Great Clips salons within a geographic bounding rectangle (northeast and southwest corners)
+      description:
+        Search for Great Clips salons within a geographic bounding rectangle (northeast and southwest corners)
       operationId: searchSalonsByRectangle
       tags:
         - Salon Search
@@ -422,6 +421,18 @@ paths:
 
 components:
   schemas:
+    WaitTimeListResponse:
+      type: object
+      description: Wait time list response containing array of store data
+      properties:
+        stores:
+          type: array
+          items:
+            $ref: '#/components/schemas/WaitTimeResponse'
+          description: List of stores with wait time information
+      required:
+        - stores
+
     WaitTimeResponse:
       type: object
       description: Wait time information for a store
@@ -430,10 +441,18 @@ components:
           type: string
           description: The store number
           example: "8874"
+        storeName:
+          type: string
+          description: The store name
+          example: "Mill Creek Village"
         estimatedWaitMinutes:
           type: integer
-          description: Estimated wait time in minutes (-1 if unavailable)
+          description: Estimated wait time in minutes (negative if unavailable)
           example: 25
+        stateFlags:
+          type: integer
+          description: State flags bitmask
+          example: 0
         ociSalonStateCode:
           type: integer
           description: Numeric status code for the salon state
