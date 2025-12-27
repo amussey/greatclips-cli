@@ -67,9 +67,9 @@ def search_stores_by_term(
             return result
     except urllib.error.HTTPError as e:
         error_body = e.read().decode("utf-8")
-        raise WebservicesAPIError(f"HTTP {e.code}: {error_body}")
-    except Exception as e:
-        raise WebservicesAPIError(f"Search request failed: {str(e)}")
+        raise WebservicesAPIError(f"HTTP {e.code}: {error_body}") from e
+    except (urllib.error.URLError, json.JSONDecodeError) as e:
+        raise WebservicesAPIError(f"Search request failed: {str(e)}") from e
 
 
 def search_stores_by_point(
@@ -123,9 +123,9 @@ def search_stores_by_point(
             return result
     except urllib.error.HTTPError as e:
         error_body = e.read().decode("utf-8")
-        raise WebservicesAPIError(f"HTTP {e.code}: {error_body}")
-    except Exception as e:
-        raise WebservicesAPIError(f"Search request failed: {str(e)}")
+        raise WebservicesAPIError(f"HTTP {e.code}: {error_body}") from e
+    except (urllib.error.URLError, json.JSONDecodeError) as e:
+        raise WebservicesAPIError(f"Search request failed: {str(e)}") from e
 
 
 def search_stores_by_rect(
@@ -190,6 +190,6 @@ def search_stores_by_rect(
             return result
     except urllib.error.HTTPError as e:
         error_body = e.read().decode("utf-8")
-        raise WebservicesAPIError(f"HTTP {e.code}: {error_body}")
-    except Exception as e:
-        raise WebservicesAPIError(f"Search request failed: {str(e)}")
+        raise WebservicesAPIError(f"HTTP {e.code}: {error_body}") from e
+    except (urllib.error.URLError, json.JSONDecodeError) as e:
+        raise WebservicesAPIError(f"Search request failed: {str(e)}") from e

@@ -56,9 +56,9 @@ def _make_request(endpoint: str, payload: dict[str, Any] | list[Any]) -> dict[st
             return result
     except urllib.error.HTTPError as e:
         error_body = e.read().decode("utf-8")
-        raise StylewareTouchAPIError(f"HTTP {e.code}: {error_body}")
-    except Exception as e:
-        raise StylewareTouchAPIError(f"Request failed: {str(e)}")
+        raise StylewareTouchAPIError(f"HTTP {e.code}: {error_body}") from e
+    except (urllib.error.URLError, json.JSONDecodeError) as e:
+        raise StylewareTouchAPIError(f"Request failed: {str(e)}") from e
 
 
 def get_wait_times(store_numbers: list[int]) -> dict[str, Any]:
@@ -85,7 +85,6 @@ def check_in_customer(
     guests: int = 1,
     ip_address: str = "",
     profile_id: str = "",
-    **kwargs,
 ) -> dict[str, Any]:
     """
     Check a customer in to a salon.
@@ -123,7 +122,6 @@ def cancel_check_in(
     guests: int = 1,
     ip_address: str = "",
     name: str = "",
-    **kwargs,
 ) -> dict[str, Any]:
     """
     Cancel an existing check-in.

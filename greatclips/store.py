@@ -1,7 +1,6 @@
 """Store-related CLI commands for Great Clips API."""
 
 import json
-import sys
 
 import click
 
@@ -76,10 +75,10 @@ def store_search_term(term, token, radius, limit, output_json):
 
     except TokenManagerError as e:
         click.secho(f"Token Error: {str(e)}", fg="red", err=True)
-        sys.exit(1)
+        raise click.Exit(1)
     except webservices_api.WebservicesAPIError as e:
         click.secho(f"Error: {str(e)}", fg="red", err=True)
-        sys.exit(1)
+        raise click.Exit(1)
 
 
 @store.command(name="search-point")
@@ -120,10 +119,10 @@ def store_search_point(lat, lng, token, radius, limit, output_json):
 
     except TokenManagerError as e:
         click.secho(f"Token Error: {str(e)}", fg="red", err=True)
-        sys.exit(1)
+        raise click.Exit(1)
     except webservices_api.WebservicesAPIError as e:
         click.secho(f"Error: {str(e)}", fg="red", err=True)
-        sys.exit(1)
+        raise click.Exit(1)
 
 
 @store.command(name="search-rect")
@@ -172,7 +171,7 @@ def store_search_rect(lat1, lng1, lat2, lng2, token, radius, limit, output_json)
 
     except TokenManagerError as e:
         click.secho(f"Token Error: {str(e)}", fg="red", err=True)
-        sys.exit(1)
+        raise click.Exit(1)
     except webservices_api.WebservicesAPIError as e:
         click.secho(f"Error: {str(e)}", fg="red", err=True)
-        sys.exit(1)
+        raise click.Exit(1)
